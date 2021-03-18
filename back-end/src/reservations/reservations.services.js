@@ -1,19 +1,25 @@
 const knex = require("../db/connection")
 
-// const res = knex("reservations as r")
-
 async function listRes() {
-  return await knex("reservations").select("*")
+  const q = await knex("reservations").select("*").returning("*")
+  return q
 }
 
-async function singleRes(reservationId){
-  return await knex("reservations")
+async function singleRes(resId){
+  const q = await knex("reservations")
     .select("*")
-    .where({ reservation_id: reservationId })
+    .where({ reservation_id: resId })
     .first()
+  return q
+}
+
+async function addRes(newRes){
+  const q = await knex("reservations").insert(newRes).returning("*")
+  return q
 }
 
 module.exports = {
   listRes,
   singleRes,
+  addRes,
 }
