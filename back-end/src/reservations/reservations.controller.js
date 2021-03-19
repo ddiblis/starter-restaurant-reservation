@@ -39,7 +39,8 @@ async function create(req, res){
 }
 
 async function list(req, res) {
-  const data = await listRes()
+  const date = req.query.date
+  const data = await listRes(date)
   res.json({ data });
 }
 
