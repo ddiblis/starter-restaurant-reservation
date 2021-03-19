@@ -16,6 +16,14 @@ async function listRes(date) {
   return q
 }
 
+async function resByTime(resTime, resDate){
+  const q = await knex("reservations")
+    .select("*")
+    .where({ reservation_time: resTime, reservation_date: resDate })
+    .first()
+  return q
+}
+
 async function singleRes(resId){
   const q = await knex("reservations")
     .select("*")
@@ -26,8 +34,7 @@ async function singleRes(resId){
 
 async function addRes(newRes){
   const q = await knex("reservations")
-    .insert(newRes)
-    .returning("*")
+    .insert(newRes, "*")
   return q
 }
 
@@ -35,4 +42,5 @@ module.exports = {
   listRes,
   singleRes,
   addRes,
+  resByTime,
 }
