@@ -1,7 +1,7 @@
 /**
  * List handler for reservation resources
  */
-const { listRes, singleRes, addRes, resByTime } = require("./reservations.services")
+const { listRes, singleRes, addRes } = require("./reservations.services")
 
 async function idValid(req, res, next) {
   const { reservation_id } = req.params
