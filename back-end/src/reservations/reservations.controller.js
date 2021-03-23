@@ -110,7 +110,7 @@ async function list(req, res) {
 async function getReservation(req, res){
   const { reservation_id } = req.params
   const data = await singleRes(reservation_id)
-  res.json({ data })
+  res.json({ data, reservation_id })
 }
 
 module.exports = {

@@ -23,7 +23,7 @@ describe("US-04 - Seat reservation", () => {
     describe("GET /tables/:table_id", () => {
       test("returns 404 for non-existent id", async () => {
         const response = await request(app)
-          .get("/reservations/99")
+          .get("/tables/99")
           .set("Accept", "application/json");
 
         expect(response.body.error).toContain("99");
@@ -170,7 +170,7 @@ describe("US-04 - Seat reservation", () => {
         const response = await request(app)
           .get("/reservations/1")
           .set("Accept", "application/json");
-
+          
         expect(response.body.error).toBeUndefined();
         expect(response.body.data.reservation_id).toBe(1);
         expect(response.status).toBe(200);

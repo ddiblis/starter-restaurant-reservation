@@ -19,11 +19,19 @@ async function getTable(tableId){
 async function addTable(newTable){
   const q = await knex("tables")
     .insert(newTable, "*")
-  return q
+  return q[0]
+}
+
+async function putTable(tableId, res){
+  const q = await knex("tables")
+    .where({ table_id: tableId })
+    .update({ reservation: res }, "*")
+  return q[0]
 }
 
 module.exports = {
   listTables,
   getTable,
   addTable,
+  putTable,
 }

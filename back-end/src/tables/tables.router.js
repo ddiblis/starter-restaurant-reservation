@@ -4,17 +4,21 @@
  * @type {Router}
  */
 
-const router = require("express").Router();
+const router = require("express").Router({ mergeParams: true });
 const controller = require("./tables.controller");
 
 router
   .route("/")
   .get(controller.list)
-  // .post(con)
+  .post(controller.create)
 
 router  
   .route("/:table_id")
   .get(controller.get)
+
+router
+  .route("/:table_id/seat")
+  .put(controller.putSeat)
 
 
 module.exports = router
