@@ -1,5 +1,5 @@
 const { addTable, listTables, getTable, putTable, delTable } = require("./tables.services")
-const { singleRes, updateRes } = require("../reservations/reservations.services")
+const { singleRes, updateResStatus } = require("../reservations/reservations.services")
 
 async function isValid(req, res, next){
   const { table_id } = req.params
@@ -118,7 +118,7 @@ async function seatPut(req, res, next){
   const { table_id } = req.params
   const { reservation_id } = req.body.data
   const data = await putTable(table_id, reservation_id)
-  await updateRes(reservation_id, "seated")
+  await updateResStatus(reservation_id, "seated")
   res.json({ data })
 }
 
@@ -126,7 +126,7 @@ async function deleteTable(req, res){
   const { table_id } = req.params
   if(req.body.data){
     const { reservation_id } = req.body.data
-    await updateRes(reservation_id, "finished")
+    await updateResStatus(reservation_id, "finished")
   }
   const data = await delTable(table_id)
   res.json({ data })

@@ -5,6 +5,7 @@ const {
   listRes,
   singleRes,
   addRes,
+  updateResStatus,
   updateRes,
 } = require("./reservations.services");
 
@@ -163,7 +164,14 @@ async function getReservation(req, res) {
 async function updateStatus(req, res) {
   const { reservation_id } = req.params;
   const { status } = req.body.data;
-  const data = await updateRes(reservation_id, status);
+  const data = await updateResStatus(reservation_id, status);
+  res.json({ data });
+}
+
+async function updateReservation(req, res) {
+  const { reservation_id } = req.params;
+  const newRes = req.body.data;
+  const data = await updateRes(reservation_id, newRes);
   res.json({ data });
 }
 
@@ -181,4 +189,14 @@ module.exports = {
     create,
   ],
   putStatus: [idValid, statusValid, canUpdate, updateStatus],
+  putRes: [
+    idValid,
+    hasFirstName,
+    hasLastName,
+    hasPhoneNumber,
+    hasNumOfPeople,
+    hasReservationTime,
+    hasReservationDate,
+    updateReservation,
+  ],
 };
