@@ -1,7 +1,6 @@
 const knex = require("../db/connection")
 
 async function listRes(date, MN) {
-  // let q
   let q = knex("reservations")
     .select("*")
   if(typeof(date) == "string"){
@@ -12,11 +11,6 @@ async function listRes(date, MN) {
   else if(typeof(MN) == "string"){
     q = q.where("mobile_number", "like", `%${MN}%`)
   }
-  // else {
-  //   q = await knex("reservations")
-  //     .select("*")
-  //     .returning("*")
-  //   }
   return await q.returning("*")
 }
 
