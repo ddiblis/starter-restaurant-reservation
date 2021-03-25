@@ -1,7 +1,7 @@
 /**
  * List handler for reservation resources
  */
-const { listRes, singleRes, addRes } = require("./reservations.services")
+const { listRes, singleRes, addRes, updateRes } = require("./reservations.services")
 
 async function idValid(req, res, next) {
   const { reservation_id } = req.params
@@ -20,6 +20,10 @@ function bodyDataHas(propertyName) {
 
     if (!value || value == "") {
       return next(error);
+    }
+
+    if(propertyName == "status"){
+      if(value !== "booked") next({ status: 400, message: `cannot create reservation with status ${value}`})
     }
     next();
   };
@@ -47,7 +51,6 @@ function hasResTime(propertyName){
     const date = data.reservation_date
     const resDate = Date.parse(date)
     let notExists
-
 
     if(!isNaN(resDate)) {
       const listByDate = await listRes(date)
@@ -95,6 +98,22 @@ const hasPhoneNumber = bodyDataHas("mobile_number")
 const hasReservationDate = hasResDate("reservation_date")
 const hasReservationTime = hasResTime("reservation_time")
 const hasNumOfPeople = hasPeople("people")
+const statusIsBooked = bodyDataHas("status")
+
+function statusValid(req, res, next){
+  const { status } = req.body.data
+  const error = { status: 400, message: `Status cannot be ${status}`}
+  if(status == "unknown") next(error)
+  next()
+}
+
+async function canUpdate(req, res, next){
+  const { reservation_id } = req.params
+  const data = await singleRes(reservation_id)
+  const error = { status: 400, message: "Cannot update finished reservation"}
+  if(data.status == "finished") next(error)
+  next()
+}
 
 async function create(req, res){
   const data = await addRes(req.body.data)
@@ -113,6 +132,13 @@ async function getReservation(req, res){
   res.json({ data, reservation_id })
 }
 
+async function updateStatus(req, res){
+  const { reservation_id } = req.params
+  const { status } = req.body.data
+  const data = await updateRes(reservation_id, status)
+  res.json({ data })
+}
+
 module.exports = {
   list,
   get: [idValid, getReservation],
@@ -121,6 +147,11 @@ module.exports = {
            hasPhoneNumber, 
            hasNumOfPeople, 
            hasReservationTime, 
-           hasReservationDate, 
+           hasReservationDate,
+           statusIsBooked,
            create],
+  putStatus: [idValid,
+              statusValid,
+              canUpdate,
+              updateStatus],
 };

@@ -29,9 +29,17 @@ async function putTable(tableId, res){
   return q[0]
 }
 
+async function delTable(tableId){
+  const q = await knex("tables")
+    .where({ table_id: tableId })
+    .del()
+  return q
+}
+
 module.exports = {
   listTables,
   getTable,
   addTable,
   putTable,
+  delTable,
 }

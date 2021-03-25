@@ -19,6 +19,6 @@ router
 router
   .route("/:table_id/seat")
   .put(controller.putSeat)
-
+  .delete(controller.remove)
 
 module.exports = router

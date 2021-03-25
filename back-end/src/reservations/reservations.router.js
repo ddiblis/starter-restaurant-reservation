@@ -11,9 +11,13 @@ router
   .route("/")
   .get(controller.list)
   .post(controller.create)
-
-router
+  
+  router
   .route("/:reservation_id")
   .get(controller.get)
+  
+  router  
+  .route("/:reservation_id/status")
+  .put(controller.putStatus)
 
 module.exports = router;

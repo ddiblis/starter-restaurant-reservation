@@ -9,6 +9,7 @@ async function listRes(date) {
   } else {
     q = await knex("reservations")
       .select("*")
+      .whereNot({ status: "finished" })
       .where({ reservation_date: date })
       .orderBy("reservation_time", "asc")
       .returning("*")
@@ -30,8 +31,16 @@ async function addRes(newRes){
   return q[0]
 }
 
+async function updateRes(resId, stat){
+  const q = await knex("reservations")
+    .where({ reservation_id: resId })
+    .update({ status: stat }, "*")
+  return q[0]
+}
+
 module.exports = {
   listRes,
   singleRes,
   addRes,
+  updateRes,
 }

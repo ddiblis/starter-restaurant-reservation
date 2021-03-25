@@ -1,5 +1,5 @@
-const { addTable, listTables, getTable, putTable } = require("./tables.services")
-const { singleRes } = require("../reservations/reservations.services")
+const { addTable, listTables, getTable, putTable, delTable } = require("./tables.services")
+const { singleRes, updateRes } = require("../reservations/reservations.services")
 
 async function isValid(req, res, next){
   const { table_id } = req.params
@@ -76,10 +76,26 @@ function hasReservation(){
   }
 }
 
+async function isOccupied(req, res, next){
+  const { table_id } = req.params
+  const error = { status: 400, message: "Table requested is not occupied."}
+  const table = await getTable(table_id)
+  if(table.reservation == null) next(error)
+  next()
+}
+
 const putChecker = putIsValid()
 const resChecker = reservationValid()
 const capacityChecker = capacityValid()
 const reservationChecker = hasReservation()
+
+async function isSeated(req, res, next){
+  const { reservation_id } = req.body.data
+  const error = { status: 400, message: "cannot seat already seated reservations."}
+  const { status } = await singleRes(reservation_id)
+  if(status == "seated") next(error)
+  next()
+}
 
 async function create(req, res){
   const newTable = req.body.data
@@ -98,10 +114,19 @@ async function get(req, res){
   res.json({ data })
 }
 
-async function resIdPut(req, res, next){
+async function seatPut(req, res, next){
   const { table_id } = req.params
   const { reservation_id } = req.body.data
   const data = await putTable(table_id, reservation_id)
+  await updateRes(reservation_id, "seated")
+  res.json({ data })
+}
+
+async function deleteTable(req, res){
+  const { table_id } = req.params
+  const { reservation_id } = req.body.data
+  const data = await delTable(table_id)
+  await updateRes(reservation_id, "finished")
   res.json({ data })
 }
 
@@ -116,5 +141,9 @@ module.exports = {
             resChecker,
             capacityChecker,
             reservationChecker,
-            resIdPut],
+            isSeated,
+            seatPut],
+  remove: [isValid,
+           isOccupied, 
+           deleteTable],
 }
