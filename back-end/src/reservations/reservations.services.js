@@ -1,28 +1,23 @@
 const knex = require("../db/connection")
 
 async function listRes(date, MN) {
-  let q
-  console.log(typeof(date), typeof(MN))
+  // let q
+  let q = knex("reservations")
+    .select("*")
   if(typeof(date) == "string"){
-    q = await knex("reservations")
-      .select("*")
-      .whereNot({ status: "finished" })
+    q = q.whereNot({ status: "finished" })
       .where({ reservation_date: date })
       .orderBy("reservation_time", "asc")
-      .returning("*")
     } 
   else if(typeof(MN) == "string"){
-    q = await knex("reservations")
-      .select("*")
-      .where("mobile_number", "like", `%${MN}%`)
-      .returning("*")
+    q = q.where("mobile_number", "like", `%${MN}%`)
   }
-  else {
-    q = await knex("reservations")
-      .select("*")
-      .returning("*")
-    }
-  return q
+  // else {
+  //   q = await knex("reservations")
+  //     .select("*")
+  //     .returning("*")
+  //   }
+  return await q.returning("*")
 }
 
 async function singleRes(resId){

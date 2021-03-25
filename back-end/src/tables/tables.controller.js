@@ -124,9 +124,11 @@ async function seatPut(req, res, next){
 
 async function deleteTable(req, res){
   const { table_id } = req.params
-  const { reservation_id } = req.body.data
+  if(req.body.data){
+    const { reservation_id } = req.body.data
+    await updateRes(reservation_id, "finished")
+  }
   const data = await delTable(table_id)
-  await updateRes(reservation_id, "finished")
   res.json({ data })
 }
 
