@@ -21,7 +21,7 @@ async function idValid(req, res, next) {
   next();
 }
 
-function bodyDataHas(propertyName) {
+function bodyDataHas(propertyName, checks) {
   return (req, res, next) => {
     const { data = {} } = req.body;
     const value = data[propertyName];
@@ -33,24 +33,16 @@ function bodyDataHas(propertyName) {
     if (!value || value == "") {
       return next(error);
     }
+    if (checks && checks(value)) {
+      return next(error)
+    }
     next();
   };
 }
 
-function hasPeople(propertyName) {
-  return (req, res, next) => {
-    const { data = {} } = req.body;
-    const value = data[propertyName];
-    const error = {
-      status: 400,
-      message: `Reservation must include a valid ${propertyName}`,
-    };
-
-    if (!value || value == "" || typeof value !== "number") {
-      return next(error);
-    }
-    next();
-  };
+function peopleCheck(people) {
+  if (!people || people == "" || typeof people !== "number") return true
+  return false
 }
 
 function hasResTime(propertyName) {
@@ -81,16 +73,14 @@ function hasResTime(propertyName) {
   };
 }
 
-function hasResDate(propertyName) {
-  return (req, res, next) => {
+function hasResDate(req, res, next){
     const error = {
       status: 400,
-      message: `Reservation must include a valid ${propertyName}`,
+      message: `Reservation must include a valid reservation_date`,
     };
-    const { data = {} } = req.body;
-    const value = data[propertyName];
-    const resDate = Date.parse(value);
-    const weekDay = new Date(value).getDay();
+    const { reservation_date } = req.body.data
+    const resDate = Date.parse(reservation_date);
+    const weekDay = new Date(reservation_date).getDay();
 
     if (resDate < Date.now()) {
       return next({
@@ -106,19 +96,18 @@ function hasResDate(propertyName) {
       });
     }
 
-    if (!value || value == "" || isNaN(resDate)) {
+    if (!reservation_date || reservation_date == "" || isNaN(resDate)) {
       return next(error);
     }
     next();
   };
-}
 
 const hasFirstName = bodyDataHas("first_name");
 const hasLastName = bodyDataHas("last_name");
+const hasPeople = bodyDataHas("people", peopleCheck)
 const hasPhoneNumber = bodyDataHas("mobile_number");
-const hasReservationDate = hasResDate("reservation_date");
 const hasReservationTime = hasResTime("reservation_time");
-const hasNumOfPeople = hasPeople("people");
+// const hasNumOfPeople = hasPeople();
 
 async function notBooked(req, res, next) {
   const { status } = req.body.data;
@@ -128,6 +117,7 @@ async function notBooked(req, res, next) {
   };
   status == "booked" || status == null ? next() : next(error);
 }
+
 function statusValid(req, res, next) {
   const { status } = req.body.data;
   const error = { status: 400, message: `Status cannot be ${status}` };
@@ -182,9 +172,9 @@ module.exports = {
     hasFirstName,
     hasLastName,
     hasPhoneNumber,
-    hasNumOfPeople,
+    hasPeople,
     hasReservationTime,
-    hasReservationDate,
+    hasResDate,
     notBooked,
     create,
   ],
@@ -194,9 +184,9 @@ module.exports = {
     hasFirstName,
     hasLastName,
     hasPhoneNumber,
-    hasNumOfPeople,
+    hasPeople,
     hasReservationTime,
-    hasReservationDate,
+    hasResDate,
     updateReservation,
   ],
 };

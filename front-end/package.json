@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Thinkful-Ed/starter-restaurant-reservation",
+    "url": "git+https://github.com/Thinkful-Ed/starter-restaurant-reservation.git",
     "directory": "/front-end"
   },
   "private": true,
@@ -13,7 +13,9 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.0",
+    "bootstrap": "^4.6.0",
     "react": "^17.0.1",
+    "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
@@ -62,5 +64,10 @@
     "jest-puppeteer": "^4.4.0",
     "npm-run-all": "^4.1.5",
     "puppeteer": "^5.5.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Thinkful-Ed/starter-restaurant-reservation/issues"
+  },
+  "author": "",
+  "license": "ISC"
 }

@@ -15,6 +15,7 @@ function Dashboard({ date }) {
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
+
     const abortController = new AbortController();
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
@@ -27,8 +28,8 @@ function Dashboard({ date }) {
     <main>
       <h1>Dashboard</h1>
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
-      </div>
+        <h4 className="mb-0">Reservations for {date}</h4>
+      </div> 
       <ErrorAlert error={reservationsError} />
       {JSON.stringify(reservations)}
     </main>

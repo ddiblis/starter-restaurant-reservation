@@ -1,4 +1,15 @@
 .side-bar {
+  margin-left: 10px;
   background-color: #393a44;
   min-width: 200px;
+}
+
+.text-margin{
+  margin-top: 50px;
+}
+
+.margin {
+  margin-top: 15px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
