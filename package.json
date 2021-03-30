@@ -49,6 +49,10 @@
   "author": "Thinkful, Inc.",
   "license": "UNLICENSED",
   "dependencies": {
-    "knex": "^0.95.2"
+    "axios": "^0.21.1",
+    "formik": "^2.2.6",
+    "knex": "^0.95.2",
+    "react-number-format": "^4.5.1",
+    "yup": "^0.32.9"
   }
 }

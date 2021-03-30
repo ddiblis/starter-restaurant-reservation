@@ -8,6 +8,7 @@ const {
   updateResStatus,
   updateRes,
 } = require("./reservations.services");
+const asyncErrorBoundry = require("../errors/asyncErrorBoundry");
 
 async function idValid(req, res, next) {
   const { reservation_id } = req.params;
@@ -34,15 +35,15 @@ function bodyDataHas(propertyName, checks) {
       return next(error);
     }
     if (checks && checks(value)) {
-      return next(error)
+      return next(error);
     }
     next();
   };
 }
 
 function peopleCheck(people) {
-  if (!people || people == "" || typeof people !== "number") return true
-  return false
+  if (!people || people == "" || typeof people !== "number") return true;
+  return false;
 }
 
 function hasResTime(propertyName) {
@@ -73,38 +74,38 @@ function hasResTime(propertyName) {
   };
 }
 
-function hasResDate(req, res, next){
-    const error = {
-      status: 400,
-      message: `Reservation must include a valid reservation_date`,
-    };
-    const { reservation_date } = req.body.data
-    const resDate = Date.parse(reservation_date);
-    const weekDay = new Date(reservation_date).getDay();
-
-    if (resDate < Date.now()) {
-      return next({
-        status: 400,
-        message: "Reservation must be at a future date.",
-      });
-    }
-
-    if (weekDay === 1) {
-      return next({
-        status: 400,
-        message: "Restaurant is closed on tuesdays, no reservations allowed.",
-      });
-    }
-
-    if (!reservation_date || reservation_date == "" || isNaN(resDate)) {
-      return next(error);
-    }
-    next();
+function hasResDate(req, res, next) {
+  const error = {
+    status: 400,
+    message: `Reservation must include a valid reservation_date`,
   };
+  const { reservation_date } = req.body.data;
+  const resDate = Date.parse(reservation_date);
+  const weekDay = new Date(reservation_date).getDay();
+
+  if (resDate < Date.now()) {
+    return next({
+      status: 400,
+      message: "Reservation must be at a future date.",
+    });
+  }
+
+  if (weekDay === 1) {
+    return next({
+      status: 400,
+      message: "Restaurant is closed on tuesdays, no reservations allowed.",
+    });
+  }
+
+  if (!reservation_date || reservation_date == "" || isNaN(resDate)) {
+    return next(error);
+  }
+  next();
+}
 
 const hasFirstName = bodyDataHas("first_name");
 const hasLastName = bodyDataHas("last_name");
-const hasPeople = bodyDataHas("people", peopleCheck)
+const hasPeople = bodyDataHas("people", peopleCheck);
 const hasPhoneNumber = bodyDataHas("mobile_number");
 const hasReservationTime = hasResTime("reservation_time");
 // const hasNumOfPeople = hasPeople();
@@ -166,8 +167,8 @@ async function updateReservation(req, res) {
 }
 
 module.exports = {
-  list,
-  get: [idValid, getReservation],
+  list: [asyncErrorBoundry(list)],
+  get: [idValid, asyncErrorBoundry(getReservation)],
   create: [
     hasFirstName,
     hasLastName,
@@ -176,9 +177,9 @@ module.exports = {
     hasReservationTime,
     hasResDate,
     notBooked,
-    create,
+    asyncErrorBoundry(create),
   ],
-  putStatus: [idValid, statusValid, canUpdate, updateStatus],
+  putStatus: [idValid, statusValid, canUpdate, asyncErrorBoundry(updateStatus)],
   putRes: [
     idValid,
     hasFirstName,
@@ -187,6 +188,6 @@ module.exports = {
     hasPeople,
     hasReservationTime,
     hasResDate,
-    updateReservation,
+    asyncErrorBoundry(updateReservation),
   ],
 };
