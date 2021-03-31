@@ -96,7 +96,7 @@ function hasReservation() {
     };
     const { table_id } = req.params;
     const table = await getTable(table_id);
-    if (table.reservation !== null) next(error);
+    if (table.reservation_id !== null) next(error);
     next();
   };
 }
@@ -105,7 +105,7 @@ async function isOccupied(req, res, next) {
   const { table_id } = req.params;
   const error = { status: 400, message: "Table requested is not occupied." };
   const table = await getTable(table_id);
-  if (table.reservation == null) next(error);
+  if (table.reservation_id == null) next(error);
   next();
 }
 

@@ -25,14 +25,14 @@ async function addTable(newTable){
 async function putTable(tableId, res){
   const q = await knex("tables")
     .where({ table_id: tableId })
-    .update({ reservation: res }, "*")
+    .update({ "reservation_id": res }, "*")
   return q[0]
 }
 
 async function delTable(tableId){
   const q = await knex("tables")
     .where({ table_id: tableId })
-    .update({ reservation: null }, "*")
+    .update({ "reservation_id": null }, "*")
   return q
 }
 

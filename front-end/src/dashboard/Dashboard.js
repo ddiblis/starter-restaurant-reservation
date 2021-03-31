@@ -18,7 +18,7 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([])
 
   
-  useEffect(loadDashboard, [date, tables]);
+  useEffect(loadDashboard, [date]);
   
   function loadDashboard() {
     const abortController = new AbortController();
@@ -61,9 +61,11 @@ function Dashboard({ date }) {
                     People: {res.people} <br />
                     Status: {res.status}
                   </Card.Text>
+                  {res.status === "booked" ? 
                   <Button href={`/reservations/${res.reservation_id}/seat`}>
                     Seat
-                  </Button>
+                  </Button> : null
+                  }
                 </Card.Body>
               </Card>
             ))}
@@ -76,16 +78,17 @@ function Dashboard({ date }) {
             {tables.map((table) => (
               <Card key={table.table_id}>
                 <Card.Body>
-                  <Card.Title data-table-id-status={table.table_id}> {table.reservation == null ? "Free" : "Occupied"} </Card.Title>
+                  <Card.Title data-table-id-status={table.table_id}> {table.reservation_id == null ? "Free" : "Occupied"} </Card.Title>
                   <Card.Text>
                     Table: {table.table_name} <br />
                     Capacity: {table.capacity} <br />
-                    Reservation: {table.reservation ? table.reservation : "None"}
+                    Reservation: {table.reservation_id ? table.reservation_id : "None"}
                   </Card.Text>
-                  {table.reservation == null ? null : (
+                  {table.reservation_id == null ? null : (
                   <Button data-table-id-finish={table.table_id} onClick={() => {
                     if (window.confirm("Is this table ready to seat new guests? This cannot be undone.")) {
-                      deleteTableRes(table.table_id, table.reservation)
+                      deleteTableRes(table.table_id, table.reservation_id)
+                        .then(history.go(0))
                     }
                   }}>
                     Finish
