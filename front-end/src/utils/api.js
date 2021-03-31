@@ -122,7 +122,6 @@ export function putTable(tableId, resId, signal){
     signal,
   }
   const data = fetchJson(url, options, signal)
-  console.log(data)
   return data
 }
 
@@ -133,6 +132,16 @@ export function deleteTableRes(tableId, resId, signal){
     headers,
     body: JSON.stringify({ data: {reservation_id: resId } }),
     signal
+  }
+  return fetchJson(url, options, signal)
+}
+
+export function resByNumber(number, signal){
+  const url = `${API_BASE_URL}/reservations?mobile_number=${number}`
+  const options = {
+    method: "GET",
+    headers,
+    signal,
   }
   return fetchJson(url, options, signal)
 }
