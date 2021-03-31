@@ -32,7 +32,7 @@ async function putTable(tableId, res){
 async function delTable(tableId){
   const q = await knex("tables")
     .where({ table_id: tableId })
-    .del()
+    .update({ reservation: null }, "*")
   return q
 }
 
