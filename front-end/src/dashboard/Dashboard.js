@@ -17,8 +17,14 @@ export default function Dashboard({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([])
 
+  const types = {
+    booked: "primary",
+    seated: "success",
+    finished: "light",
+    cancelled: "danger",
+  }
   
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDashboard, [date, tables, setReservations]);
   
   function loadDashboard() {
     let isMounted = true; // note this flag denote mount status
@@ -66,9 +72,9 @@ export default function Dashboard({ date }) {
         <CardColumns>
             {reservations.map((res) => ( 
               res.status !== "finished" ? (
-              <Card key={res.reservation_id}>
+              <Card key={res.reservation_id} border={types[res.status]} style={{ width: '20rem', height: "17.5rem" }}>
+                <Card.Header data-reservation-id-status={res.reservation_id}>{res.status}</Card.Header>
                 <Card.Body>
-                  <Card.Title data-reservation-id-status={res.reservation_id}>{res.status}</Card.Title>
                   <Card.Text >
                     First Name: {res.first_name} <br />
                     Last Name: {res.last_name} <br />
@@ -108,9 +114,9 @@ export default function Dashboard({ date }) {
       <CardDeck>
         <CardColumns>
             {tables.map((table) => (
-              <Card key={table.table_id}>
+              <Card key={table.table_id} style={{ width: '20rem', height: "13rem" }}>
+                <Card.Header data-table-id-status={table.table_id}> {table.reservation_id == null ? "Free" : "Occupied"} </Card.Header>
                 <Card.Body>
-                  <Card.Title data-table-id-status={table.table_id}> {table.reservation_id == null ? "Free" : "Occupied"} </Card.Title>
                   <Card.Text>
                     Table: {table.table_name} <br />
                     Capacity: {table.capacity} <br />

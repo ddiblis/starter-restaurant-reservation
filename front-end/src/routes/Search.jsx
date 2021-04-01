@@ -18,8 +18,6 @@ export default function Search() {
     setNumber(event.target.value);
   };
 
-  console.log(number)
-
   return (
     <Fragment>
       <Form onSubmit={handleSubmit}>

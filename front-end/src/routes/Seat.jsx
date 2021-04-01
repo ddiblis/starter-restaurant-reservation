@@ -9,7 +9,7 @@ export default function Seat() {
   const { reservation_id } = useParams();
   const [tables, setTables] = useState([]);
   const [res, setRes] = useState({});
-  const [tableId, setTableId] = useState(0);
+  const [tableId, setTableId] = useState(1);
   const [table, setTable] = useState({});
 
   useEffect(loadPage, [reservation_id, tableId]);
@@ -45,6 +45,7 @@ export default function Seat() {
         <Form.Group controlId="exampleForm.ControlInput1">
           <Form.Label>Table To Seat Resevation</Form.Label>
           <Form.Control as="select" name="table_id" onChange={handleChange}>
+            <option key={0} value={"none"}> -- Please Select table to seat -- </option>
             {tables.map((table) => (
               <option key={table.table_id} value={table.table_id}>
                 {table.table_name} - {table.capacity}
