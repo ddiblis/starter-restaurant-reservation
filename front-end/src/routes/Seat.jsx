@@ -30,7 +30,9 @@ export default function Seat() {
     event.preventDefault();
 
     if (res.people <= table.capacity) {
-      putTable(tableId, res.reservation_id).then(history.push("/dashboard"));
+      putTable(tableId, res.reservation_id).then(() => {
+        return history.push("/reservations")
+      });
     }
   };
 
