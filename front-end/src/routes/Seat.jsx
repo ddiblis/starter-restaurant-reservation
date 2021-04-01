@@ -31,7 +31,7 @@ export default function Seat() {
 
     if (res.people <= table.capacity) {
       putTable(tableId, res.reservation_id).then(() => {
-        return history.push("/reservations")
+        return history.push("/reservations");
       });
     }
   };
@@ -47,7 +47,10 @@ export default function Seat() {
         <Form.Group controlId="exampleForm.ControlInput1">
           <Form.Label>Table To Seat Resevation</Form.Label>
           <Form.Control as="select" name="table_id" onChange={handleChange}>
-            <option key={0} value={"none"}> -- Please Select table to seat -- </option>
+            <option key={0} value={"none"}>
+              {" "}
+              -- Please Select table to seat --{" "}
+            </option>
             {tables.map((table) => (
               <option key={table.table_id} value={table.table_id}>
                 {table.table_name} - {table.capacity}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { Card, Form, Button } from "react-bootstrap";
 import { useHistory, useParams } from "react-router";
 import { editReservation, getReservation } from "../utils/api";
@@ -19,9 +19,9 @@ function Errors({ errors = [] }) {
   return null;
 }
 
-export default function Edit(){
+export default function Edit() {
   const [errors, setErrors] = useState(null);
-  const { reservation_id } = useParams()
+  const { reservation_id } = useParams();
   // const [selectedRes, setSelectedRes] = useState([])
   const [form, setForm] = useState({
     reservation_id: 0,
@@ -43,17 +43,15 @@ export default function Edit(){
 
   const history = useHistory();
 
-  useEffect(renderForm, [reservation_id])
+  useEffect(renderForm, [reservation_id]);
 
-  function renderForm(){
-    const abortController = new AbortController()
-    getReservation(reservation_id, abortController.signal)
-      .then(setForm)
-    
+  function renderForm() {
+    const abortController = new AbortController();
+    getReservation(reservation_id, abortController.signal).then(setForm);
 
     return () => {
-      abortController.abort()
-    }
+      abortController.abort();
+    };
   }
 
   function validate(form) {
@@ -80,7 +78,7 @@ export default function Edit(){
 
     function timeIsValid({ reservation_time }) {
       const [hour, minute] = reservation_time.split(":");
-      console.log(Number(hour) > 21)
+      console.log(Number(hour) > 21);
 
       if (Number(hour) < 10 || (Number(hour) <= 10 && Number(minute) <= 30)) {
         err.push(
@@ -88,7 +86,7 @@ export default function Edit(){
         );
       }
 
-      if ( Number(hour) > 21 || (Number(hour) >= 21 && Number(minute) >= 30)) {
+      if (Number(hour) > 21 || (Number(hour) >= 21 && Number(minute) >= 30)) {
         err.push(new Error("Reservation time cannot be after 9:30PM."));
       }
     }
@@ -102,7 +100,7 @@ export default function Edit(){
 
   const submitHandler = (event) => {
     form.people = Number(form.people);
-    form.reservation_time = form.reservation_time.slice(0, 5)
+    form.reservation_time = form.reservation_time.slice(0, 5);
     event.preventDefault();
 
     const listOfErrors = validate(form);
@@ -111,10 +109,9 @@ export default function Edit(){
       return setErrors(listOfErrors);
     }
 
-    editReservation(reservation_id, form)
-      .then(() => {
-      return history.goBack(1)
-    })
+    editReservation(reservation_id, form).then(() => {
+      return history.goBack(1);
+    });
   };
 
   return (

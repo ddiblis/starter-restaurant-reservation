@@ -64,7 +64,7 @@ export default function NewReservation() {
 
     function timeIsValid({ reservation_time }) {
       const [hour, minute] = reservation_time.split(":");
-      console.log(Number(hour) > 21)
+      console.log(Number(hour) > 21);
 
       if (Number(hour) < 10 || (Number(hour) <= 10 && Number(minute) <= 30)) {
         err.push(
@@ -72,7 +72,7 @@ export default function NewReservation() {
         );
       }
 
-      if ( Number(hour) > 21 || (Number(hour) >= 21 && Number(minute) >= 30)) {
+      if (Number(hour) > 21 || (Number(hour) >= 21 && Number(minute) >= 30)) {
         err.push(new Error("Reservation time cannot be after 9:30PM."));
       }
     }

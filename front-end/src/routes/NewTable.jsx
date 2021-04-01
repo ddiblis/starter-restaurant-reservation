@@ -1,7 +1,7 @@
 import { Form, Button, Card } from "react-bootstrap";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { newTable } from "../utils/api"
+import { newTable } from "../utils/api";
 
 export default function NewTable() {
   const history = useHistory();
@@ -22,8 +22,9 @@ export default function NewTable() {
     event.preventDefault();
     form.capacity = Number(form.capacity);
 
-    newTable(form)
-      .then(history.push(`/dashboard`))
+    newTable(form).then(() => {
+      return history.push(`/reservations`)
+    });
   };
 
   return (
