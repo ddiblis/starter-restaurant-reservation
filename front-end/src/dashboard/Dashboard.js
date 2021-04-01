@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables, deleteTableRes } from "../utils/api";
+import { listReservations, listTables, deleteTableRes, cancelReservation } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { CardColumns, Card, Button, ButtonToolbar, CardDeck } from "react-bootstrap"
 import { today, next, previous } from "../utils/date-time"
@@ -18,22 +18,23 @@ export default function Dashboard({ date }) {
   const [tables, setTables] = useState([])
 
   
-  useEffect(loadDashboard, [tables, date]);
+  useEffect(loadDashboard, [date]);
   
   function loadDashboard() {
     let isMounted = true; // note this flag denote mount status
     const abortController = new AbortController();
     setReservationsError(null);
+    
     if(date){
-      listTables(abortController.signal)
-        .then(data => {
-          if (isMounted) setTables(data)
-        })
+        listReservations({ date }, abortController.signal)
+          .then(data => {
+            if(isMounted) setReservations(data)})
+          .catch(setReservationsError);
 
-      listReservations({ date }, abortController.signal)
-        .then(data => {
-          if(isMounted) setReservations(data)})
-        .catch(setReservationsError);
+        listTables(abortController.signal)
+          .then(data => {
+            if (isMounted) setTables(data)
+          })
     } else {
       listReservations(abortController.signal)
         .then(data => {
@@ -77,9 +78,24 @@ export default function Dashboard({ date }) {
                     People: {res.people} <br />
                   </Card.Text>
                   {res.status === "booked" ? 
-                  <Button href={`/reservations/${res.reservation_id}/seat`}>
-                    Seat
-                  </Button> : null
+                  <ButtonToolbar className="justify-content-between">
+                    <Button variant="outline-success" href={`/reservations/${res.reservation_id}/seat`}>
+                      Seat
+                    </Button> 
+                    <Button variant="outline-secondary" href={`/reservations/${res.reservation_id}/edit`}>
+                      Edit
+                    </Button>
+                    <Button data-reservation-id-cancel={res.reservation_id} variant="outline-danger" onClick={() => {
+                      if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+                        cancelReservation(res.reservation_id).then(() => {
+                          history.go(0)
+                        })
+                      }
+                    }}>
+                      Cancel
+                    </Button>
+                  </ButtonToolbar>
+                  : null
                   }
                 </Card.Body>
               </Card>
@@ -101,9 +117,11 @@ export default function Dashboard({ date }) {
                     Reservation: {table.reservation_id ? table.reservation_id : "None"}
                   </Card.Text>
                   {table.reservation_id == null ? null : (
-                  <Button data-table-id-finish={table.table_id} onClick={() => {
+                  <Button data-table-id-finish={table.table_id} variant="outline-success" onClick={() => {
                     if (window.confirm("Is this table ready to seat new guests? This cannot be undone.")) {
-                      deleteTableRes(table.table_id, table.reservation_id)
+                      deleteTableRes(table.table_id, table.reservation_id).then(() => {
+                        history.go(0)
+                      })
                     }
                   }}>
                     Finish
