@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Card, Form, Button } from "react-bootstrap";
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
+import Errors from "../componenets/Errors";
 import { getReservation, getTable, listTables, putTable } from "../utils/api";
 
 export default function Seat() {
+  const [errors, setErrors] = useState(null);
   const history = useHistory();
   const { reservation_id } = useParams();
   const [tables, setTables] = useState([]);
@@ -26,14 +28,43 @@ export default function Seat() {
     return () => abortController.abort();
   }
 
+  function validate(table, res) {
+    const err = [];
+
+    function notOccupied({ reservation_id }) {
+      if (reservation_id) {
+        err.push(new Error("Cannot seat at Occupied table."));
+      }
+    }
+
+    function enoughCapacity({ capacity }, { people }) {
+      if (capacity < people) {
+        err.push(
+          new Error("Table doesn't have enough capacity for reservation.")
+        );
+      }
+    }
+
+    notOccupied(table);
+    enoughCapacity(table, res);
+
+    return err;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (res.people <= table.capacity) {
-      putTable(tableId, res.reservation_id).then(() => {
-        return history.push("/reservations");
-      });
+    const listOfErrors = validate(table, res);
+
+    if (listOfErrors.length) {
+      return setErrors(listOfErrors);
     }
+
+    putTable(tableId, res.reservation_id)
+      .then(() => {
+        return history.push("/reservations");
+      })
+      .catch(setErrors);
   };
 
   const handleChange = (event) => {
@@ -42,6 +73,7 @@ export default function Seat() {
 
   return (
     <Card body>
+      <Errors error={errors} />
       <h1> Seat Reservation: {reservation_id}</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="exampleForm.ControlInput1">

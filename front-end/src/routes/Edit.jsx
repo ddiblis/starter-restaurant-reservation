@@ -1,28 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
 import { useHistory, useParams } from "react-router";
+import ReservationForm from "../componenets/ReservationForm";
 import { editReservation, getReservation } from "../utils/api";
-
-function Errors({ errors = [] }) {
-  if (errors !== null) {
-    if (errors.length) {
-      return (
-        <div className="alert alert-danger">
-          Error:
-          {errors.map((error) => (
-            <p key={error.message}>{error.message}</p>
-          ))}
-        </div>
-      );
-    }
-  }
-  return null;
-}
 
 export default function Edit() {
   const [errors, setErrors] = useState(null);
   const { reservation_id } = useParams();
-  // const [selectedRes, setSelectedRes] = useState([])
   const [form, setForm] = useState({
     reservation_id: 0,
     first_name: "",
@@ -115,81 +98,13 @@ export default function Edit() {
   };
 
   return (
-    <Card body>
-      <h1> Edit Reservation: {reservation_id} </h1>
-      <Form onSubmit={submitHandler}>
-        <Errors errors={errors} />
-        <Form.Group controlId="exampleForm.ControlInput1">
-          <Form.Label>First Name</Form.Label>
-          <Form.Control
-            required
-            name="first_name"
-            type="string"
-            placeholder="First Name"
-            value={form.first_name}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group controlId="exampleForm.ControlInput2">
-          <Form.Label>Last Name</Form.Label>
-          <Form.Control
-            required
-            name="last_name"
-            type="string"
-            value={form.last_name}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group controlId="exampleForm.ControlInput3">
-          <Form.Label>Phone Number</Form.Label>
-          <Form.Control
-            required
-            name="mobile_number"
-            type="string"
-            value={form.mobile_number}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group controlId="exampleForm.ControlInput4">
-          <Form.Label>Reservation Date</Form.Label>
-          <Form.Control
-            required
-            name="reservation_date"
-            type="date"
-            pattern="\d{4}-\d{2}-\d{2}"
-            value={form.reservation_date}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group controlId="exampleForm.ControlInput5">
-          <Form.Label>Reservation Time</Form.Label>
-          <Form.Control
-            required
-            name="reservation_time"
-            type="time"
-            pattern="[0-9]{2}:[0-9]{2}"
-            value={form.reservation_time}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group controlId="exampleForm.ControlInput6">
-          <Form.Label>Number of people</Form.Label>
-          <Form.Control
-            required
-            name="people"
-            type="number"
-            min={1}
-            value={form.people}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>{" "}
-        <Button variant="secondary" onClick={() => history.goBack(1)}>
-          Cancel
-        </Button>{" "}
-      </Form>
-    </Card>
+    <ReservationForm
+      submitHandler={submitHandler}
+      form={form}
+      handleChange={handleChange}
+      history={history}
+      errors={errors}
+      formType={"Edit Reservation"}
+    />
   );
 }

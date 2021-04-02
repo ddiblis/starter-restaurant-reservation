@@ -2,8 +2,10 @@ import { Form, Button, Card } from "react-bootstrap";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { newTable } from "../utils/api";
+import Errors from "../componenets/Errors";
 
 export default function NewTable() {
+  const [errors, setErrors] = useState(null);
   const history = useHistory();
   const [form, setForm] = useState({
     table_name: "",
@@ -18,17 +20,45 @@ export default function NewTable() {
     });
   };
 
+  function validate(form) {
+    const err = [];
+
+    function validName({ table_name }) {
+      if (table_name.length < 2) {
+        err.push(new Error("Table name has to be at least 2 characters long."));
+      }
+    }
+
+    function validCapacity({ capacity }) {
+      if (Number(capacity) < 1) {
+        err.push(new Error("Table must have capacity of at least 1."));
+      }
+    }
+
+    validName(form);
+    validCapacity(form);
+
+    return err;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     form.capacity = Number(form.capacity);
 
+    const listOfErrors = validate(form);
+
+    if (listOfErrors.length) {
+      return setErrors(listOfErrors);
+    }
+
     newTable(form).then(() => {
-      return history.push(`/reservations`)
+      return history.push(`/reservations`);
     });
   };
 
   return (
     <Card body>
+      <Errors error={errors} />
       <h1> New Table </h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formBasicEmail">
