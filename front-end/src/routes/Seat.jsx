@@ -73,7 +73,7 @@ export default function Seat() {
 
   return (
     <Card body>
-      <Errors error={errors} />
+      <Errors errors={errors} />
       <h1> Seat Reservation: {reservation_id}</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="exampleForm.ControlInput1">

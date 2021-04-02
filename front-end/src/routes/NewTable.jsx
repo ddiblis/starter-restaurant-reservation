@@ -58,7 +58,7 @@ export default function NewTable() {
 
   return (
     <Card body>
-      <Errors error={errors} />
+      <Errors errors={errors} />
       <h1> New Table </h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formBasicEmail">
@@ -68,7 +68,6 @@ export default function NewTable() {
             name="table_name"
             type="string"
             placeholder="XX"
-            minLength="2"
             value={form.table_name}
             onChange={handleChange}
           />
@@ -79,7 +78,6 @@ export default function NewTable() {
             required
             name="capacity"
             type="string"
-            min="1"
             placeholder="0"
             value={form.capacity}
             onChange={handleChange}

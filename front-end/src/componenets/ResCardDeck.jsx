@@ -7,6 +7,7 @@ import {
   ButtonToolbar,
   CardDeck,
 } from "react-bootstrap";
+import _ from "lodash"
 
 export default function ResCardDeck(props) {
   const { reservations, history, dashboard } = props;
@@ -30,7 +31,7 @@ export default function ResCardDeck(props) {
                 style={{ width: "20rem", height: "17.5rem" }}
               >
                 <Card.Header data-reservation-id-status={res.reservation_id}>
-                  {res.status}
+                  {_.capitalize(res.status)}
                 </Card.Header>
                 <Card.Body>
                   <Card.Text>
