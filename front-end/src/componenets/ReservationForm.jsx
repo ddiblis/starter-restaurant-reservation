@@ -1,12 +1,19 @@
-import React from "react"
+import React from "react";
 import { Form, Card, Button } from "react-bootstrap";
-import Errors from "../componenets/Errors"
+import Errors from "../componenets/Errors";
 
-export default function ReservationForm(props){
-  const { submitHandler, form, handleChange, history, errors, formType } = props
+export default function ReservationForm(props) {
+  const {
+    submitHandler,
+    form,
+    handleChange,
+    history,
+    errors,
+    formType,
+  } = props;
 
   return (
-    <Card body>
+    <Card body bg={"dark"}>
       <Errors errors={errors} />
       <h1> {formType} </h1>
       <Form onSubmit={submitHandler}>
@@ -79,13 +86,13 @@ export default function ReservationForm(props){
             onChange={handleChange}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button variant="outline-primary" type="submit">
           Submit
         </Button>{" "}
-        <Button variant="secondary" onClick={() => history.goBack(1)}>
+        <Button variant="outline-secondary" onClick={() => history.goBack(1)}>
           Cancel
         </Button>{" "}
       </Form>
     </Card>
-  )
+  );
 }

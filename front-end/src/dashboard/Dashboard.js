@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { listReservations, listTables } from "../utils/api";
-import { Button, ButtonToolbar } from "react-bootstrap";
-import { today, next, previous } from "../utils/date-time";
-import { useHistory } from "react-router-dom";
 import Errors from "../componenets/Errors";
-import ResCardDeck from "../componenets/ResCardDeck";
-import TableCardDeck from "../componenets/TableCardDeck";
+import ResCardDeck from "../componenets/reservationCardComponent/ResCardDeck";
+import TableCardDeck from "../componenets/TableCardComponents/TableCardDeck";
+import DateControl from "../componenets/DateControl";
 
 /**
  * Defines the dashboard page.
@@ -14,7 +12,6 @@ import TableCardDeck from "../componenets/TableCardDeck";
  * @returns {JSX.Element}
  */
 export default function Dashboard({ date }) {
-  const history = useHistory();
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
@@ -63,34 +60,12 @@ export default function Dashboard({ date }) {
       <Errors error={reservationsError} />
 
       <h1> Reservations </h1>
-      <ResCardDeck
-        reservations={reservations}
-        history={history}
-        dashboard={true}
-      />
+      <ResCardDeck reservations={reservations} dashboard={true} />
 
       <h1> Tables </h1>
-      <TableCardDeck tables={tables} history={history} />
+      <TableCardDeck tables={tables} />
 
-      <ButtonToolbar className="justify-content-between">
-        <Button
-          onClick={() =>
-            history.push(`/dashboard?date=${previous(date ? date : today())}`)
-          }
-        >
-          Previous Day
-        </Button>
-        <Button onClick={() => history.push(`/dashboard?date=${today()}`)}>
-          Today
-        </Button>
-        <Button
-          onClick={() =>
-            history.push(`/dashboard?date=${next(date ? date : today())}`)
-          }
-        >
-          Next Day
-        </Button>
-      </ButtonToolbar>
+      <DateControl date={date} />
     </main>
   );
 }

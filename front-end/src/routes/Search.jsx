@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { Form, Col, Button } from "react-bootstrap";
 import { useHistory } from "react-router";
-import ResCardDeck from "../componenets/ResCardDeck";
+import ResCardDeck from "../componenets/reservationCardComponent/ResCardDeck";
 import { resByNumber } from "../utils/api";
 
 export default function Search() {
@@ -34,7 +34,9 @@ export default function Search() {
               onChange={handleChange}
             />
           </Col>
-          <Button type="submit">Search</Button>
+          <Button variant={"outline-primary"} type="submit">
+            Search
+          </Button>
         </Form.Row>
       </Form>
 

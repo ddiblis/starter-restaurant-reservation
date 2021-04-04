@@ -57,7 +57,7 @@ export default function NewTable() {
   };
 
   return (
-    <Card body>
+    <Card body bg={"dark"}>
       <Errors errors={errors} />
       <h1> New Table </h1>
       <Form onSubmit={handleSubmit}>
@@ -83,10 +83,10 @@ export default function NewTable() {
             onChange={handleChange}
           />
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button variant="outline-primary" type="submit">
           Submit
         </Button>{" "}
-        <Button variant="secondary" onClick={() => history.goBack(1)}>
+        <Button variant="outline-secondary" onClick={() => history.goBack(1)}>
           Cancel
         </Button>{" "}
       </Form>
