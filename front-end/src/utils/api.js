@@ -88,6 +88,7 @@ export async function newReservation(res,signal){
     headers,
     body: JSON.stringify({ data: res }),
     signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
@@ -99,6 +100,7 @@ export async function newTable(table, signal){
     headers,
     body: JSON.stringify({ data: table }),
     signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
@@ -109,6 +111,7 @@ export async function listTables(signal){
     method: "GET",
     headers,
     signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
@@ -120,6 +123,7 @@ export async function putTable(tableId, resId, signal){
     headers,
     body: JSON.stringify({ data: { reservation_id: resId }}),
     signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
@@ -130,7 +134,8 @@ export async function deleteTableRes(tableId, resId, signal){
     method: "DELETE",
     headers,
     body: JSON.stringify({ data: {reservation_id: resId } }),
-    signal
+    signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
@@ -141,6 +146,7 @@ export async function resByNumber(number, signal){
     method: "GET",
     headers,
     signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
@@ -152,6 +158,7 @@ export async function cancelReservation(resId, signal){
     headers,
     body: JSON.stringify({ data: { status: "cancelled" }}),
     signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
@@ -163,6 +170,7 @@ export async function editReservation(resId, reservation, signal){
     headers,
     body: JSON.stringify({ data: reservation }),
     signal,
+    mode: 'cors',
   }
   return await fetchJson(url, options, signal)
 }
