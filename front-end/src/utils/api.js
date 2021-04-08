@@ -149,6 +149,8 @@ export async function resByNumber(number, signal){
     mode: 'cors',
   }
   return await fetchJson(url, options, signal)
+    .then(formatReservationDate)
+    .then(formatReservationTime);
 }
 
 export async function cancelReservation(resId, signal){

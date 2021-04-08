@@ -20,86 +20,80 @@ async function isValid(req, res, next) {
   next();
 }
 
-function hasTableName() {
-  return (req, res, next) => {
-    const error = {
-      status: 400,
-      message: `Table must include a valid table_name`,
-    };
-    const { data = {} } = req.body;
-    const value = data.table_name;
-    if (!value || value == "" || value.length == 1) {
-      return next(error);
-    }
-    next();
+function hasTableName(req, res, next) {
+  const error = {
+    status: 400,
+    message: `Table must include a valid table_name`,
   };
-}
+  const { data = {} } = req.body;
+  const value = data.table_name;
+  if (!value || value == "" || value.length == 1) {
+    return next(error);
+  }
+  next();
+};
 
-function hasCapacity() {
-  return (req, res, next) => {
-    const error = {
-      status: 400,
-      message: `Table must include a valid capacity`,
-    };
-    const { data = {} } = req.body;
-    const value = data.capacity;
-    if (!value || value == 0 || typeof value !== "number") {
-      return next(error);
-    }
-    next();
+
+function hasCapacity(req, res, next) {
+  const error = {
+    status: 400,
+    message: `Table must include a valid capacity`,
   };
-}
+  const { data = {} } = req.body;
+  const value = data.capacity;
+  if (!value || value == 0 || typeof value !== "number") {
+    return next(error);
+  }
+  next();
+};
 
-const capacityTest = hasCapacity();
-const tableNameTest = hasTableName();
 
-function putIsValid() {
-  return (req, res, next) => {
-    if (!req.body.data) next({ status: 400 });
-    const { reservation_id } = req.body.data;
-    if (!reservation_id)
-      next({ status: 400, message: `data missing reservation_id` });
-    next();
+// const capacityTest = hasCapacity();
+// const tableNameTest = hasTableName();
+
+function putIsValid(req, res, next) {
+  if (!req.body.data) next({ status: 400 });
+  const { reservation_id } = req.body.data;
+  if (!reservation_id)
+    next({ status: 400, message: `data missing reservation_id` });
+  next();
+};
+
+
+async function reservationValid(req, res, next) {
+  const { reservation_id } = req.body.data;
+  const reservation = await singleRes(reservation_id);
+  if (!reservation)
+    next({
+      status: 404,
+      message: `Reservation ${reservation_id} does not exist`,
+    });
+  next();
+};
+
+
+async function capacityValid(req, res, next) {
+  const { reservation_id } = req.body.data;
+  const { table_id } = req.params;
+  const reservation = await singleRes(reservation_id);
+  const table = await getTable(table_id);
+  if (table.capacity < reservation.people)
+    next({ status: 400, message: `Table doesn't have enough capacity.` });
+  next();
+};
+
+
+async function hasReservation(req, res, next) {
+  const error = {
+    status: 400,
+    message: "Table requested is already occupied.",
   };
-}
+  const { table_id } = req.params;
+  const table = await getTable(table_id);
+  if (table.reservation_id !== null) next(error);
+  next();
+};
 
-function reservationValid() {
-  return async (req, res, next) => {
-    const { reservation_id } = req.body.data;
-    const reservation = await singleRes(reservation_id);
-    if (!reservation)
-      next({
-        status: 404,
-        message: `Reservation ${reservation_id} does not exist`,
-      });
-    next();
-  };
-}
-
-function capacityValid() {
-  return async (req, res, next) => {
-    const { reservation_id } = req.body.data;
-    const { table_id } = req.params;
-    const reservation = await singleRes(reservation_id);
-    const table = await getTable(table_id);
-    if (table.capacity < reservation.people)
-      next({ status: 400, message: `Table doesn't have enough capacity.` });
-    next();
-  };
-}
-
-function hasReservation() {
-  return async (req, res, next) => {
-    const error = {
-      status: 400,
-      message: "Table requested is already occupied.",
-    };
-    const { table_id } = req.params;
-    const table = await getTable(table_id);
-    if (table.reservation_id !== null) next(error);
-    next();
-  };
-}
 
 async function isOccupied(req, res, next) {
   const { table_id } = req.params;
@@ -109,10 +103,10 @@ async function isOccupied(req, res, next) {
   next();
 }
 
-const putChecker = putIsValid();
-const resChecker = reservationValid();
-const capacityChecker = capacityValid();
-const reservationChecker = hasReservation();
+// const putChecker = putIsValid();
+// const resChecker = reservationValid();
+// const capacityChecker = capacityValid();
+// const reservationChecker = hasReservation();
 
 async function isSeated(req, res, next) {
   const { reservation_id } = req.body.data;
@@ -163,12 +157,12 @@ async function deleteTable(req, res) {
 module.exports = {
   list: [asyncErrorBoundry(list)],
   get: [isValid, asyncErrorBoundry(get)],
-  create: [capacityTest, tableNameTest, asyncErrorBoundry(create)],
+  create: [hasCapacity, hasTableName, asyncErrorBoundry(create)],
   putSeat: [
-    putChecker,
-    resChecker,
-    capacityChecker,
-    reservationChecker,
+    putIsValid,
+    reservationValid,
+    capacityValid,
+    hasReservation,
     isSeated,
     asyncErrorBoundry(seatPut),
   ],
