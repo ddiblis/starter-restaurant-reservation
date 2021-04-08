@@ -4,13 +4,13 @@ import ResCard from "./ResCard";
 export default function ResCards(props) {
   const { reservations, dashboard } = props;
 
-  return reservations.map((res) =>
+  return reservations.map(res =>
     dashboard === true ? (
       res.status !== "finished" ? (
-        <ResCard res={res} />
+        <ResCard key={res.reservation_id} res={res} />
       ) : null
     ) : (
-      <ResCard res={res} />
+      <ResCard key={res.reservation_id} res={res} />
     )
   );
 }

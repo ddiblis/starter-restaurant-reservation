@@ -15,7 +15,6 @@ export default function ResCard(props) {
 
   return (
     <Card
-      key={res.reservation_id}
       border={resTypes[res.status]}
       style={{ width: "20rem", height: "17.5rem" }}
       bg={"dark"}
