@@ -1,5 +1,6 @@
 const knex = require("../db/connection");
 
+// Accepts a phone number and date, if either is present it'll append onto the request a certain query.
 async function listRes(date, MN) {
   let q = knex("reservations").select("*");
   if (typeof date == "string") {
